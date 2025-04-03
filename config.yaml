@@ -1,0 +1,11 @@
+api:
+  base_url: 'https://api.deepseek.com'
+  api_key: 'sk-xxxxxxxxxxxxxxxxxxxxxxxxx'
+  model: 'deepseek-chat'
+
+paths:
+  temp_dir: 'tmp'
+  mineru_path: 'magic-pdf'
+
+settings:
+  cleanup_temp: false  # 是否在处理完成后删除临时文件 
