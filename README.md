@@ -6,6 +6,7 @@
 
 左侧为输入的pdf，右侧为翻译后的markdown文件
 
+![demo2](assets/demo2.png)
 ![demo1](assets/demo.png)
 
 ## 功能特点

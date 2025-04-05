@@ -7,6 +7,7 @@ from openai import OpenAI
 import subprocess
 from omegaconf import OmegaConf
 import re
+import fitz  # PyMuPDF库，用于PDF预览
 
 # 加载配置
 config = OmegaConf.load('config.yaml')
@@ -200,6 +201,39 @@ def process_pdf(pdf_file, target_lang="中文"):
             except Exception as e:
                 print(f"清理临时文件失败: {str(e)}")
 
+def preview_pdf(pdf_file):
+    """预览PDF文件的前五页"""
+    if pdf_file is None:
+        return None, "请上传PDF文件"
+    
+    try:
+        # 打开PDF文件
+        doc = fitz.open(pdf_file.name)
+        
+        # 获取总页数
+        total_pages = doc.page_count
+        
+        # 只显示前五页
+        num_pages = min(5, total_pages)
+        
+        # 创建临时目录
+        temp_dir = os.path.join(config.paths.temp_dir, os.urandom(8).hex())
+        os.makedirs(temp_dir, exist_ok=True)
+        
+        # 保存预览图片
+        preview_images = []
+        for page_num in range(num_pages):
+            page = doc[page_num]
+            pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5))  # 1.5倍缩放以提高清晰度
+            img_path = os.path.join(temp_dir, f"preview_page_{page_num+1}.png")
+            pix.save(img_path)
+            preview_images.append(img_path)
+        
+        doc.close()
+        return preview_images, f"PDF预览成功，显示前{num_pages}页，共{total_pages}页"
+    except Exception as e:
+        return None, f"PDF预览失败: {str(e)}"
+
 # 创建Gradio界面
 with gr.Blocks() as demo:
     gr.Markdown("# PDF工具")
@@ -208,8 +242,12 @@ with gr.Blocks() as demo:
     gr.Markdown("2. 转换为Markdown并翻译")
     
     with gr.Row():
-        with gr.Column():
+        with gr.Column(scale=2):  # 增加左侧列的比例
             pdf_input = gr.File(label="上传PDF文件")
+            preview_gallery = gr.Gallery(label="PDF预览", show_label=True, columns=1, rows=5, height=600)  # 增加预览窗口高度
+            preview_status = gr.Textbox(label="预览状态")
+        
+        with gr.Column(scale=1):  # 右侧列比例较小
             target_lang = gr.Dropdown(
                 choices=["中文", "English", "日本語", "한국어"],
                 value="中文",
@@ -218,10 +256,15 @@ with gr.Blocks() as demo:
             with gr.Row():
                 convert_btn = gr.Button("转换为Markdown")
                 translate_btn = gr.Button("转换并翻译")
-        
-        with gr.Column():
             output_file = gr.File(label="下载结果")
             status = gr.Textbox(label="处理状态")
+    
+    # 上传文件后自动触发预览
+    pdf_input.change(
+        fn=preview_pdf,
+        inputs=[pdf_input],
+        outputs=[preview_gallery, preview_status]
+    )
     
     convert_btn.click(
         fn=convert_pdf_to_markdown,
