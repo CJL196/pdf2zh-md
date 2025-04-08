@@ -22,7 +22,13 @@
 - 打包下载翻译结果和图片
 - 使用配置文件管理设置
 
-## 安装依赖
+## 部署安装
+
+### Worker
+
+`worker` 目录下
+
+#### 安装依赖
 
 跟随[MinerU官方教程](https://github.com/opendatalab/MinerU?tab=readme-ov-file#quick-start)安装magic-pdf
 
@@ -31,9 +37,14 @@
 pip install -r requirements.txt
 ```
 
-## 配置说明
+#### 配置说明
 
 在 `config.yaml` 文件中可以配置以下选项：
+
+- `settings`: 应用设置
+  - `cleanup_temp`: 是否在处理完成后删除临时文件
+
+- `redis`: Redis 相关配置
 
 - `api`: API相关配置
   - `base_url`: DeepSeek API的基础URL
@@ -44,28 +55,61 @@ pip install -r requirements.txt
   - `temp_dir`: 临时文件目录
   - `mineru_path`: MinerU可执行文件路径
 
-- `settings`: 应用设置
-  - `cleanup_temp`: 是否在处理完成后删除临时文件
+- `prompts`: 翻译要求的 prompts
 
-## 使用方法
+#### 启动应用
 
-1. 配置 `config.yaml` 文件（可选）
+确保 Redis 可以访问，可以参考 `worker/docker-compose.yaml` 部署。
 
-2. 运行应用：
-```bash
-python app.py
+```shell
+# 指定为 4 线程启动
+celery -A celery_app.app worker --loglevel=info  --concurrency=4
+
+# celery 在 Windows 尚不支持多线程，需要指定为单线程启动
+celery -A celery_app.app worker --loglevel=info --pool=solo
 ```
 
-3. 在浏览器中打开显示的地址（默认为 http://localhost:7860）
-
-4. 上传PDF文件，选择目标语言，点击"开始处理"
-
-5. 等待处理完成后，下载包含翻译后Markdown文件和图片的zip包
-
-## 注意事项
+#### 注意事项
 
 - 确保MinerU环境已正确配置
 - 确保DeepSeek API密钥有效
 - 处理大文件时可能需要较长时间
 - 临时文件默认保存在项目根目录的 `tmp` 文件夹中 
 
+### Web App
+
+`app` 目录下
+
+#### 安装依赖
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 配置说明
+
+在 `config.yaml` 文件中可以配置以下选项：
+
+- `settings`: 应用设置
+  - `cleanup_temp`: 是否在处理完成后删除临时文件
+
+- `redis`: Redis 相关配置
+
+- `api`: API相关配置
+  - `base_url`: DeepSeek API的基础URL
+  - `api_key`: DeepSeek API密钥
+  - `model`: 使用的模型名称
+
+- `paths`: 路径配置
+  - `temp_dir`: 临时文件目录
+  - `mineru_path`: MinerU可执行文件路径
+
+- `prompts`: 翻译要求的 prompts
+
+#### 启动应用
+
+确保 Redis 可以访问。Web App 将通过 Redis 和 Worker 通信。
+
+```shell
+python app.py
+```
