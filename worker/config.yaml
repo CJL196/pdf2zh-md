@@ -1,14 +1,12 @@
 settings:
+  mineru_path: 'd:/ProgramData/miniforge3/envs/magic-pdf/Scripts/magic-pdf'
+  temp_dir: 'tmp'
   cleanup_temp: false  # 是否在处理完成后删除临时文件
 
 redis:
   host: '172.18.198.205'
   port: 6379
   db: 0
-
-paths:
-  temp_dir: 'tmp'
-  mineru_path: 'magic-pdf'
 
 api:
   base_url: 'https://api.deepseek.com'
