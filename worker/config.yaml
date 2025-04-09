@@ -1,0 +1,21 @@
+settings:
+  mineru_path: 'd:/ProgramData/miniforge3/envs/magic-pdf/Scripts/magic-pdf'
+  temp_dir: 'tmp'
+  cleanup_temp: false  # 是否在处理完成后删除临时文件
+
+redis:
+  host: '172.18.198.205'
+  port: 6379
+  db: 0
+
+api:
+  base_url: 'https://api.deepseek.com'
+  model: 'deepseek-chat'
+
+prompts: [
+  '你必须翻译每一句话，而不是总结内容。',
+  '翻译时需确保语言具有学术性，准确传达原文含义，不得遗漏任何部分。',
+  '仅输出翻译结果，不得添加任何无关内容或注释。',
+  '遇到<html>包裹的块只需原样输出，保持原有的markdown格式。',
+  # '**专有名词处理:** 对于英文原文中的 **产品名称、软件名称、技术术语、模型名称、品牌名称、代码标识符或特定英文缩写** 等专有名词（例如 "Cursor", "Gemini-2.5-pro-exp", "VS Code", "API", "GPT-4"），**必须保留其原始英文形式，不进行翻译**。请将这些英文术语自然地嵌入到流畅的中文译文中。 **重要示例:** 如果原文是 "Add Gemini-2.5-pro-exp to Cursor"，一个好的翻译应该是像 “快把 Gemini-2.5-pro-exp 加到 Cursor 里试试！” 或 “推荐将 Gemini-2.5-pro-exp 集成到 Cursor 中”，**绝不能** 翻译 "Cursor" 或 "Gemini-2.5-pro-exp"。'
+]

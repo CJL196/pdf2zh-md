@@ -1,0 +1,8 @@
+openai==1.71.0
+celery==5.5.0
+redis==5.2.1
+python-dotenv
+omegaconf
+
+# 这个最好单独环境安装
+# magic-pdf[full]==1.3.0

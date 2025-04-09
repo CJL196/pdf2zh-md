@@ -1,1 +1,22 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# dev
+__pycache__
+.gradio
+
+# pdf2zh-md
+.env
 tmp
