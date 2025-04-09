@@ -1,11 +1,11 @@
 from celery import Celery
 from typing import Dict
-from config import config
+from config import REDIS_URL
 
 app = Celery(
   'pdf_tasks',
-  broker=f'redis://{config.redis.host}:6379/{config.redis.db}',
-  backend=f'redis://{config.redis.host}:6379/{config.redis.db}',
+  broker=REDIS_URL,
+  backend=REDIS_URL,
   task_serializer='json',
   accept_content=['json'],
   result_serializer='json'

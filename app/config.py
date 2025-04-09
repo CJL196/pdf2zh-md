@@ -5,6 +5,7 @@ import redis
 # 加载配置
 config = OmegaConf.load('config.yaml')
 
+REDIS_URL=f"redis://{config.redis.host}:{config.redis.port}/{config.redis.db}"
 QUEUE_SIZE = int(config.settings.queue_size)
 RESULT_DIR = config.settings.result_dir
 

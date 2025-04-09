@@ -21,7 +21,7 @@ def preview_pdf(tmp_path):
     for page_num in range(num_pages):
       page = doc[page_num]
       pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5))  # 1.5倍缩放以提高清晰度
-      preview_images.append(pix.pil_image())
+      preview_images.append(pix.pil_image())  # requires pymupdf>=1.25.2
     doc.close()
     return preview_images, f"PDF预览成功，显示前{num_pages}页，共{total_pages}页"
   except Exception as e:
