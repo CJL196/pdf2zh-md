@@ -16,6 +16,8 @@ desktop.ini
 # dev
 __pycache__
 .gradio
+build
+dist
 
 # pdf2zh-md
 .env
