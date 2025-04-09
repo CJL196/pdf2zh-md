@@ -22,7 +22,7 @@ TRANSLATE_STEPS = [
   (Executor.step3, 2),
   (Executor.step4, 6),
   (Executor.step5, 7),
-  (Executor.step6, 8),
+  (Executor.step6, 8, 98),
   (Executor.step7, 98),
   (Executor.step8, 99),
 ]
@@ -34,7 +34,7 @@ CONVERT_STEPS = [
   (Executor.step3, 2),
   (Executor.step4, 96),
   (Executor.step5, 97),
-  (Executor.step6, 98),
+  (Executor.step7, 98),
   (Executor.step8, 99),
 ]
 
@@ -42,7 +42,7 @@ CONVERT_STEPS = [
 def convert_pdf_to_markdown(self, filename: str, target_lang: str = None) -> str:
   executor = Executor(filename, target_lang)
   try:
-    for i, step in enumerate(CONVERT_STEPS if target_lang is None else TRANSLATE_STEPS):
+    for step in CONVERT_STEPS if target_lang is None else TRANSLATE_STEPS:
       if executor.progress(self, step[1]):
         return "Aborted"
       if len(step)==3:
@@ -52,7 +52,7 @@ def convert_pdf_to_markdown(self, filename: str, target_lang: str = None) -> str
         step[0](executor)
     
     executor.clean_up()
-    return executor.zip_path
+    return f"{executor.pdf_name}.zip"
   
   except Exception as e:
     self.update_state(

@@ -118,7 +118,7 @@ class Executor:
   def step2(self):
     """保存上传到 Redis 的 PDF"""
     try:
-      self.input_pdf_path = os.path.join(self.temp_dir, "input.pdf")
+      self.input_pdf_path = os.path.join(self.temp_dir, self.filename)
       file_data = r.get(f"file:{self.filename}")
       with open(self.input_pdf_path, 'wb') as f:
         f.write(file_data)
