@@ -1,26 +1,32 @@
 # PDF翻译工具
 
-这是一个基于Gradio的Web应用，可以将PDF文件转换为Markdown格式并进行翻译。该工具使用MinerU进行PDF转换，使用DeepSeek API进行翻译。
+这是一个可以将 PDF 文件转换为 Markdown 格式并进行翻译的 Web 应用。
 
 ## 示例
 
-左侧为输入的pdf，右侧为翻译后的markdown文件
+界面展示
 
 ![demo2](assets/demo2.png)
+
+左侧为输入的 pdf，右侧为翻译后的 markdown 文件对比
+
 ![demo1](assets/demo.png)
 
-## 在线体验
+任务监控与管理
 
-在中大校园网内访问 [http://172.18.198.204:7861/](http://172.18.198.204:7861/)
+![demo3](assets/demo3.png)
 
 ## 功能特点
 
-- 支持PDF文件上传
-- 支持多种目标语言选择（中文、英文、日文、韩文）
-- 自动提取PDF中的图片
-- 保持Markdown格式
-- 打包下载翻译结果和图片
-- 使用配置文件管理设置
+- 使用 MinerU magic-pdf 将 PDF 转换为 Markdown
+  - 自动提取 PDF 中的图片
+  - 自动转化 PDF 中的数学公式为 Latex
+- 使用 DeepSeek API 进行翻译
+  - 支持多种目标语言选择（中文、英文、日文、韩文）
+  - 配置文件中可自定义 Prompts
+- 打包下载转换结果、翻译结果和图片
+- 可分布式部署多个 Worker
+- 实时监控和管理任务队列
 
 ## 部署安装
 
@@ -30,11 +36,11 @@
 
 #### 安装依赖
 
-跟随[MinerU官方教程](https://github.com/opendatalab/MinerU?tab=readme-ov-file#quick-start)安装 magic-pdf。安装过程是需要[下载模型参数](https://github.com/papayalove/Magic-PDF/blob/master/docs/how_to_download_models_zh_cn.md)的，这些模型参数通过 huggingface_hub 下载，默认会存储在系统盘的 ``~YourUser/.cache/` 目录下，请确保相关磁盘空间（或者或许能改存储路径）。
+跟随[MinerU官方教程](https://github.com/opendatalab/MinerU?tab=readme-ov-file#quick-start)安装 magic-pdf。安装过程是需要[下载模型参数](https://github.com/papayalove/Magic-PDF/blob/master/docs/how_to_download_models_zh_cn.md)的，这些模型参数通过 huggingface_hub 下载，默认会存储在系统盘的 `~YourUser/.cache/` 目录下，请确保相关磁盘空间（或者或许能改存储路径）。
 
 注意，若需要 GPU 加速，需要按照其指定要求的 CUDA 等的版本：
-- [Windows](https://github.com/papayalove/Magic-PDF/blob/master/docs/README_Windows_CUDA_Acceleration_zh_CN.md)
-- [Ubuntu](https://github.com/papayalove/Magic-PDF/blob/master/docs/README_Ubuntu_CUDA_Acceleration_zh_CN.md)
+- [Windows](https://github.com/opendatalab/MinerU/blob/master/docs/README_Windows_CUDA_Acceleration_zh_CN.md)
+- [Ubuntu](https://github.com/opendatalab/MinerU/blob/master/docs/README_Ubuntu_CUDA_Acceleration_zh_CN.md)
 
 由于 magic-pdf 对环境要求比较严格，为了避免和其他依赖打架，最好给它单独创建一个环境安装，然后配置中填写其 `.../magic-pdf` 绝对路径。
 
@@ -111,7 +117,7 @@ pip install -r requirements.txt
 
 #### 启动应用
 
-确保 Redis 可以访问。Web App 将通过 Redis 和 Worker 通信。
+确保 Redis 可以访问。Web App 将通过 Redis 来和 Worker 通信。
 
 ```shell
 python app.py
