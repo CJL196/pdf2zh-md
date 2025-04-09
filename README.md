@@ -28,15 +28,13 @@
 - 可分布式部署多个 Worker
 - 实时监控和管理任务队列
 
-## 部署安装
+## 手工部署
 
 ### Worker
 
-`worker` 目录下
+在 `worker` 目录下操作。
 
-#### 安装依赖
-
-跟随[MinerU官方教程](https://github.com/opendatalab/MinerU?tab=readme-ov-file#quick-start)安装 magic-pdf。安装过程是需要[下载模型参数](https://github.com/papayalove/Magic-PDF/blob/master/docs/how_to_download_models_zh_cn.md)的，这些模型参数通过 huggingface_hub 下载，默认会存储在系统盘的 `~YourUser/.cache/` 目录下，请确保相关磁盘空间（或者或许能改存储路径）。
+首先跟随[MinerU官方教程](https://github.com/opendatalab/MinerU?tab=readme-ov-file#quick-start)安装 magic-pdf。安装过程是需要[下载模型参数](https://github.com/papayalove/Magic-PDF/blob/master/docs/how_to_download_models_zh_cn.md)的，这些模型参数通过 huggingface_hub 下载，默认会存储在系统盘的 `~YourUser/.cache/` 目录下，请确保相关磁盘空间（或者或许能改存储路径）。
 
 注意，若需要 GPU 加速，需要按照其指定要求的 CUDA 等的版本：
 - [Windows](https://github.com/opendatalab/MinerU/blob/master/docs/README_Windows_CUDA_Acceleration_zh_CN.md)
@@ -52,7 +50,7 @@
 pip install -r requirements.txt
 ```
 
-#### 配置说明
+配置说明如下：
 
 在 `config.yaml` 文件中可以配置以下选项：
 
@@ -75,10 +73,7 @@ pip install -r requirements.txt
 
 此外，安装好 magic-pdf 后，其配置文件在：`~YourUser/magic-pdf.json`。
 
-
-#### 启动应用
-
-确保 Redis 可以访问，可以参考 `worker/docker-compose.yaml` 部署。
+确保 Redis 可以访问，参考 `config.yaml` 中的 redis 配置部署。最后启动 Worker 应用：
 
 ```shell
 # 指定为 4 线程启动
@@ -88,24 +83,15 @@ celery -A celery_app.app worker --loglevel=info  --concurrency=4
 celery -A celery_app.app worker --loglevel=info --pool=solo
 ```
 
-#### 注意事项
-
-- 确保MinerU环境已正确配置
-- 确保DeepSeek API密钥有效
-- 处理大文件时可能需要较长时间
-- 临时文件默认保存在项目根目录的 `tmp` 文件夹中 
-
 ### Web App
 
-`app` 目录下
-
-#### 安装依赖
+在 `app` 目录下操作。首先安装依赖：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 配置说明
+配置说明如下
 
 在 `config.yaml` 文件中可以配置以下选项：
 
@@ -115,10 +101,16 @@ pip install -r requirements.txt
 
 - `redis`: Redis 相关配置
 
-#### 启动应用
-
-确保 Redis 可以访问。Web App 将通过 Redis 来和 Worker 通信。
+确保 Redis 可以访问。Web App 将通过 Redis 来和 Worker 通信。最后启动应用：
 
 ```shell
 python app.py
 ```
+
+## docker compose 部署方案
+
+通过 `app/docker-compose.yaml` 部署。
+
+其中的 cloudflared 和其所需 token 的 `.env` 仅用于内网穿透暴露服务，若不需要可以移除。
+
+此外，上述仅部署 Redis 和 Web App。而 Worker 由于不方便打包，环境配置较复杂，仍需要手工部署。
