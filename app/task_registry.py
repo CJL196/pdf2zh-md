@@ -1,6 +1,7 @@
 import time
 from celery.result import AsyncResult
 from celery.app.control import Control
+from celery.contrib.abortable import AbortableAsyncResult
 from celery_app import app, convert_pdf_to_markdown
 from typing import List, Dict
 from datetime import datetime
@@ -67,14 +68,14 @@ class TaskRegistry:
       return
     
     task_id, pdf_file_name = self.task_queue[i]
-    result = AsyncResult(task_id, app=app)
+    result = AbortableAsyncResult(task_id, app=app)
     state = result.state
     
     ctl: Control = app.control
     if state == "PENDING":
       ctl.revoke(task_id, terminate=True)  # 从 redis 队列中删除任务
     else:
-      ctl.revoke(task_id, terminate=False)  # 通知任务应该终止
+      result.abort()  # 任务正在运行执行, 通知任务应该终止, Worker 将提前结束任务并清理
 
     # 删除 redis 中的文件和本地可能保存的执行结果文件
     _ = r.delete(f"file:{pdf_file_name}")
