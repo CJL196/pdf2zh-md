@@ -11,6 +11,6 @@ FROM ubuntu:24.04
 
 WORKDIR /app
 
-COPY --from=builder ./dist/app/* /app/
+COPY --from=builder ./dist/app /app/
 
 ENTRYPOINT ["/app/app"]
