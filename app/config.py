@@ -18,3 +18,5 @@ r = redis.Redis(
   port=config.redis.port,
   db=config.redis.db
 )
+
+r.ping()

@@ -3,7 +3,7 @@ settings:
   result_dir: tmp  # 临时存放任务结果文件的目录 
 
 redis:
-  host: '172.18.198.205'
+  host: redis
   port: 6379
   db: 0
 

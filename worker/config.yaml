@@ -4,7 +4,7 @@ settings:
   cleanup_temp: false  # 是否在处理完成后删除临时文件
 
 redis:
-  host: '172.18.198.205'
+  host: localhost
   port: 6379
   db: 0
 
